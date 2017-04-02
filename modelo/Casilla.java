@@ -1,9 +1,27 @@
 package modelo;
 
-public class Casilla {
+public class Casilla extends Coordenada {
 	private boolean velada=true;
 	private boolean marcada=false;
-	
+	private boolean tieneMina = false;
+	private int numero = 0;
+ 
+ 	public Casilla(int x, int y) {
+ 		super(x, y);
+	}
+ 		
+	public boolean isTieneMina() {
+		return tieneMina;
+	}
+	public void setTieneMina(boolean tieneMina) {
+		this.tieneMina = tieneMina;
+	}
+	public int getNumero() {
+		return numero;
+	}
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
 	public boolean isVelada() {
 		return velada;
 	}

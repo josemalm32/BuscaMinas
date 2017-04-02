@@ -5,9 +5,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import modelo.Tablero;
+
 public class ReceptorEventos implements ActionListener {
 	
-	ParaUIBusqui para;
+	Tablero tablero;
 	
 
 	
@@ -20,6 +22,17 @@ public class ReceptorEventos implements ActionListener {
            //Para Debug
            System.out.println(x);
            System.out.println(y);
+           if(tablero.getCasilla(x, y).isTieneMina()){
+        	   botonpulsado.setText("MINAZA");
+           }else {
+			botonpulsado.setText(String.valueOf(tablero.getCasilla(x, y).getNumero()));
+		}
+           
+	}
+	
+	
+	public void dameTodoLoco(Tablero tableroEntrada) {
+		tablero = tableroEntrada;
 	}
 
 }

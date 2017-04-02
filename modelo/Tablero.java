@@ -16,22 +16,17 @@ public class Tablero {
 		casillas=new Casilla[filas][columnas];
 		for (int i = 0; i < casillas.length; i++) {
 			for (int j = 0; j < casillas[i].length; j++) {
-				casillas[i][j]=new Casilla();
+				casillas[i][j]=new Casilla(i,j);
 			}
 		}
 	}
 
-	private Casilla[][] getCasillas() {
-		return casillas;
+	public Casilla getCasilla(int x,int y) {
+		return casillas[x][y];
 	}
 
 	private void setCasillas(Casilla[][] casillas) {
 		this.casillas = casillas;
 	}
 
-	public Casilla getCasilla(Coordenada coordenada) {
-		return casillas[coordenada.getX()][coordenada.getY()];
-	}
-
-	
 }
