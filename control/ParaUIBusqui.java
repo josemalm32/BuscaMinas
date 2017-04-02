@@ -11,19 +11,39 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class ParaUIBusqui extends UIbusqui {
 	private JButton[][] botones;
 	private Tablero tablero;
-	private ReceptorEventos receptorEventos = new ReceptorEventos();
 
 	public ParaUIBusqui() {
 		crearBotones(20, 20);
 		colocaMinas(50, 20, 20);
-		receptorEventos.dameTodoLoco(tablero);
 	}
 
+	ActionListener receptoreventos = new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			   JButton botonpulsado = (JButton) e.getSource();
+	           String[] posicionBoton = botonpulsado.getName().split(" ", 2);
+	           int x = Integer.parseInt(posicionBoton[0]);
+	           int y = Integer.parseInt(posicionBoton[1]);
+	           //Para Debug
+	           System.out.println(x);
+	           System.out.println(y);
+	           if(tablero.getCasilla(x, y).isTieneMina()){
+	        	   botonpulsado.setText("MINAZA");
+	           }else {
+				botonpulsado.setText(String.valueOf(tablero.getCasilla(x, y).getNumero()));
+			}
+			
+		}
+	};
+	
 	public void crearBotones(int ancho, int alto) {
 		botones = new JButton[ancho][alto];
 		panelBotonera.setLayout(new GridLayout(0, ancho, 0, 0));
@@ -34,7 +54,7 @@ public class ParaUIBusqui extends UIbusqui {
 				botones[i][j].setBorder(new LineBorder(Color.BLACK));
 				botones[i][j].setBorderPainted(true);
 				botones[i][j].setName(i + " " + j);
-				botones[i][j].addActionListener(receptorEventos);
+				botones[i][j].addActionListener(receptoreventos);
 				panelBotonera.add(botones[i][j]);
 			}
 		}
