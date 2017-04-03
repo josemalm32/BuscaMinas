@@ -1,7 +1,7 @@
 package modelo;
 
 public class Casilla extends Coordenada {
-	private boolean velada=true;
+	private boolean velada=false;
 	private boolean marcada=false;
 	private boolean tieneMina = false;
 	private int numero = 0;
@@ -25,7 +25,7 @@ public class Casilla extends Coordenada {
 	public boolean isVelada() {
 		return velada;
 	}
-	private void setVelada(boolean velada) {
+	public void setVelada(boolean velada) {
 		this.velada = velada;
 	}
 	public boolean isMarcada() {
