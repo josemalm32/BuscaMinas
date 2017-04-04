@@ -4,9 +4,11 @@ import java.awt.Color;
 
 import javax.swing.JButton;
 
+import modelo.Imagenes;
 import modelo.Tablero;
 
 public class Varios {
+	private Imagenes imagenes = new Imagenes();
 
 	public JButton[][] bloqueaBotones(JButton[][] botonera) {
 
@@ -41,4 +43,16 @@ public class Varios {
 
 	}
 
+	public JButton[][] descubrirMinas(JButton[][] botonera, Tablero tablero) {
+
+		for (int i = 0; i < botonera.length; i++) {
+			for (int j = 0; j < botonera[i].length; j++) {
+				if (tablero.getCasilla(i, j).isTieneMina()) {
+					botonera[i][j].setIcon(imagenes.getMina());
+					botonera[i][j].setBackground(Color.red);
+				}
+			}
+		}
+		return botonera;
+	}
 }

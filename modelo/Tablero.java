@@ -4,7 +4,6 @@ public class Tablero {
 	private Casilla[][] casillas;
 
 	public Tablero(int filas,int columnas) {
-		super();
 		generarTablero(filas, columnas);
 	}
 

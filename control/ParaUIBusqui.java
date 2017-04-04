@@ -1,5 +1,6 @@
 package control;
 
+import modelo.Imagenes;
 import modelo.Tablero;
 import vista.UIbusqui;
 
@@ -8,6 +9,7 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import java.awt.Color;
@@ -16,18 +18,57 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial")
 public class ParaUIBusqui extends UIbusqui {
 	private JButton[][] botones;
 	private Tablero tablero;
+	private int marcadas;
+	private int numeraDesveladas;
+	static final int numeroMinas = 10;
+	static final int numeroCuadro = 50;
+	static final int numeroADesvelar = (int) (Math.pow(50, 2) - numeroMinas);
 	private Varios varios = new Varios();
+	private Imagenes imagenes = new Imagenes();
 
 	public ParaUIBusqui() {
-		crearBotones(50, 50);
-		colocaMinas(200, 50, 50);
+		System.out.println(numeroADesvelar);
+		crearBotones(numeroCuadro, numeroCuadro);
+		colocaMinas(numeroMinas, numeroCuadro, numeroCuadro);
+
 	}
 
+	MouseListener receptorbotonDerecha = new MouseListener() {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if (SwingUtilities.isRightMouseButton(e)) {
+				JButton botonpulsado = (JButton) e.getSource();
+				String[] posicionBoton = botonpulsado.getName().split(" ", 2);
+				int x = Integer.parseInt(posicionBoton[0]);
+				int y = Integer.parseInt(posicionBoton[1]);
+				clickDerecho(botonpulsado, x, y);
+			}
+		}
+	};
 	ActionListener receptoreventos = new ActionListener() {
 
 		@Override
@@ -36,18 +77,7 @@ public class ParaUIBusqui extends UIbusqui {
 			String[] posicionBoton = botonpulsado.getName().split(" ", 2);
 			int x = Integer.parseInt(posicionBoton[0]);
 			int y = Integer.parseInt(posicionBoton[1]);
-			// Para Debug
-			System.out.println(x);
-			System.out.println(y);
 			clickIzquierdo(x, y, false);
-
-			// if(tablero.getCasilla(x, y).isTieneMina()){
-			// botonpulsado.setText("MINAZA");
-			// }else {
-			// botonpulsado.setText(String.valueOf(tablero.getCasilla(x,
-			// y).getNumero()));
-			// }
-
 		}
 	};
 
@@ -63,6 +93,7 @@ public class ParaUIBusqui extends UIbusqui {
 				botones[i][j].setBorderPainted(true);
 				botones[i][j].setName(i + " " + j);
 				botones[i][j].addActionListener(receptoreventos);
+				botones[i][j].addMouseListener(receptorbotonDerecha);
 				panelBotonera.add(botones[i][j]);
 			}
 		}
@@ -72,12 +103,10 @@ public class ParaUIBusqui extends UIbusqui {
 		int alto1 = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
 		this.setBounds((ancho1 / 2) - (this.getWidth() / 2), (alto1 / 2) - (this.getHeight() / 2), ancho * 40,
 				alto * 40);
-
 	}
 
 	private void colocaMinas(int noMinas, int ancho, int alto) {
 		Random rand = new Random();
-
 		tablero = new Tablero(ancho, alto);
 		int contador = 0;
 		int x;
@@ -104,6 +133,7 @@ public class ParaUIBusqui extends UIbusqui {
 						}
 					}
 				}
+
 			}
 		}
 	}
@@ -116,21 +146,28 @@ public class ParaUIBusqui extends UIbusqui {
 				if (recursivo == false) {
 					botones[x][y].setBackground(Color.RED);
 					botones = varios.bloqueaBotones(botones);
+					// panelBotonera.setEnabled(false);
+					botones = varios.descubrirMinas(botones, tablero);
 					break;
 				}
 			case 0:
 				botones[x][y].setBackground(Color.lightGray);
+				
 				for (int i = -1; i <= 1; i++) {
 					for (int j = -1; j <= 1; j++) {
 						try {
+							numeraDesveladas++;
+							comprobarDesveladas();
 							clickIzquierdo(x + i, y + j, true);
 						} catch (Exception e) {
-							// TODO: handle exception
+
 						}
 					}
 				}
 				break;
 			default:
+				numeraDesveladas++;
+				comprobarDesveladas();
 				botones[x][y].setText(Integer.toString(tablero.getCasilla(x, y).getNumero()));
 				botones[x][y].setBackground(Color.lightGray);
 				botones[x][y].setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -140,4 +177,34 @@ public class ParaUIBusqui extends UIbusqui {
 
 		}
 	}
+
+	public void clickDerecho(JButton botonPulsado, int x, int y) {
+		if (!tablero.getCasilla(x, y).isMarcada()) {
+			if (tablero.getCasilla(x, y).isTieneMina()) {
+				marcadas++;
+			}
+			tablero.getCasilla(x, y).setMarcada(true);
+			botonPulsado.setIcon(imagenes.getBandera());
+		} else {
+			tablero.getCasilla(x, y).setMarcada(false);
+			if (tablero.getCasilla(x, y).isTieneMina()) {
+				marcadas--;
+				botonPulsado.setIcon(null);
+			}
+			botonPulsado.setText("");
+		}
+		if (marcadas == numeroMinas) {
+			// TODO Poner ganador
+		}
+	}
+
+	public void comprobarDesveladas(){
+		if(numeraDesveladas == numeroADesvelar){
+			System.out.println("Ganador..");
+			
+		}
+	}
+
 }
+
+

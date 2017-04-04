@@ -5,7 +5,6 @@ public class Casilla extends Coordenada {
 	private boolean marcada=false;
 	private boolean tieneMina = false;
 	private int numero = 0;
- 
  	public Casilla(int x, int y) {
  		super(x, y);
 	}
