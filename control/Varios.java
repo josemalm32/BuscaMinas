@@ -1,15 +1,19 @@
 package control;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JButton;
 
 import modelo.Imagenes;
 import modelo.Tablero;
 
-public class Varios {
-	private Imagenes imagenes = new Imagenes();
 
+
+public class Varios {
+
+	private Imagenes imagenes = new Imagenes();
+	private Color verdeClaro = new Color(45, 255, 71);
 	public JButton[][] bloqueaBotones(JButton[][] botonera) {
 
 		for (int i = 0; i < botonera.length; i++) {
@@ -24,7 +28,7 @@ public class Varios {
 
 		switch (tablero.getCasilla(x, y).getNumero()) {
 		case 1:
-			botonera[x][y].setForeground(Color.RED);
+			botonera[x][y].setForeground(Color.CYAN);
 			return botonera;
 		case 2:
 			botonera[x][y].setForeground(Color.green);
@@ -33,10 +37,10 @@ public class Varios {
 			botonera[x][y].setForeground(Color.yellow);
 			return botonera;
 		case 4:
-			botonera[x][y].setForeground(Color.pink);
+			botonera[x][y].setForeground(Color.orange);
 			return botonera;
 		case 5:
-			botonera[x][y].setForeground(Color.orange);
+			botonera[x][y].setForeground(Color.red);
 			return botonera;
 		}
 		return botonera;
@@ -50,7 +54,13 @@ public class Varios {
 				if (tablero.getCasilla(i, j).isTieneMina()) {
 					botonera[i][j].setIcon(imagenes.getMina());
 					botonera[i][j].setBackground(Color.red);
+				}else if(tablero.getCasilla(i, j).getNumero() != 0) {
+					botonera[i][j].setFont(new Font("Tahoma", Font.BOLD, 20));
+					botonera[i][j].setText(String.valueOf(tablero.getCasilla(i, j).getNumero()));
+					botonera = cambiaColorTexto(botonera, i, j, tablero);
+					botonera[i][j].setBackground(Color.white);
 				}
+				
 			}
 		}
 		return botonera;

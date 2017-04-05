@@ -1,6 +1,7 @@
 package control;
 
 import modelo.Imagenes;
+import modelo.Sonido;
 import modelo.Tablero;
 import vista.UIbusqui;
 
@@ -27,14 +28,14 @@ public class ParaUIBusqui extends UIbusqui {
 	private Tablero tablero;
 	private int marcadas;
 	private int numeraDesveladas;
-	static final int numeroMinas = 10;
+	static final int numeroMinas = 5;
+	private Sonido sonido = new Sonido();
 	static final int numeroCuadro = 50;
 	static final int numeroADesvelar = (int) (Math.pow(50, 2) - numeroMinas);
 	private Varios varios = new Varios();
 	private Imagenes imagenes = new Imagenes();
 
 	public ParaUIBusqui() {
-		System.out.println(numeroADesvelar);
 		crearBotones(numeroCuadro, numeroCuadro);
 		colocaMinas(numeroMinas, numeroCuadro, numeroCuadro);
 
@@ -90,6 +91,7 @@ public class ParaUIBusqui extends UIbusqui {
 				botones[i][j] = new JButton();
 				botones[i][j].setPreferredSize(new Dimension(12, 12));
 				botones[i][j].setBorder(new LineBorder(Color.BLACK));
+				botones[i][j].setBackground(Color.BLUE);
 				botones[i][j].setBorderPainted(true);
 				botones[i][j].setName(i + " " + j);
 				botones[i][j].addActionListener(receptoreventos);
@@ -145,13 +147,14 @@ public class ParaUIBusqui extends UIbusqui {
 			case -1:
 				if (recursivo == false) {
 					botones[x][y].setBackground(Color.RED);
-					botones = varios.bloqueaBotones(botones);
+				//	botones = varios.bloqueaBotones(botones);
 					// panelBotonera.setEnabled(false);
+					sonido.ReproducirSonido("recursos/perder.wav");
 					botones = varios.descubrirMinas(botones, tablero);
 					break;
 				}
 			case 0:
-				botones[x][y].setBackground(Color.lightGray);
+				botones[x][y].setBackground(Color.white);
 				
 				for (int i = -1; i <= 1; i++) {
 					for (int j = -1; j <= 1; j++) {
@@ -169,7 +172,7 @@ public class ParaUIBusqui extends UIbusqui {
 				numeraDesveladas++;
 				comprobarDesveladas();
 				botones[x][y].setText(Integer.toString(tablero.getCasilla(x, y).getNumero()));
-				botones[x][y].setBackground(Color.lightGray);
+				botones[x][y].setBackground(Color.white);
 				botones[x][y].setFont(new Font("Tahoma", Font.BOLD, 20));
 				botones = varios.cambiaColorTexto(botones, x, y, tablero);
 				break;
@@ -179,7 +182,7 @@ public class ParaUIBusqui extends UIbusqui {
 	}
 
 	public void clickDerecho(JButton botonPulsado, int x, int y) {
-		if (!tablero.getCasilla(x, y).isMarcada()) {
+		if (!tablero.getCasilla(x, y).isMarcada() && !tablero.getCasilla(x, y).isVelada()) {
 			if (tablero.getCasilla(x, y).isTieneMina()) {
 				marcadas++;
 			}
@@ -200,7 +203,8 @@ public class ParaUIBusqui extends UIbusqui {
 
 	public void comprobarDesveladas(){
 		if(numeraDesveladas == numeroADesvelar){
-			System.out.println("Ganador..");
+
+
 			
 		}
 	}
